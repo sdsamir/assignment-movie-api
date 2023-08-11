@@ -1,12 +1,8 @@
-﻿using Challange.Movies.Domain.Abstructions;
-using System.Linq.Expressions;
-using Challange.Movies.Api.Dtos;
-using AutoMapper;
-using Challange.Movies.Domain.Entities;
-using System.Collections.Generic;
+﻿using AutoMapper;
+using Challange.Movies.Api.Dtos.Movie;
 using Challange.Movies.Api.Dtos.Showtime;
 using Challange.Movies.Api.Dtos.Ticket;
-using Challange.Movies.Api.Dtos.Movie;
+using Challange.Movies.Domain.Abstructions;
 
 namespace Challange.Movies.Api.Services.Showtime
 {
@@ -15,7 +11,6 @@ namespace Challange.Movies.Api.Services.Showtime
         public IAuditoriumRepository _auditoriumRepository;
         private readonly IShowtimeRepository _showtimeRepository;
         private readonly IMovieRepository _movieRepository;
-        private readonly ITicketRepository _ticketRepository;
 
         private readonly IMapper _mapper;
         public ShowtimeService(
@@ -28,7 +23,6 @@ namespace Challange.Movies.Api.Services.Showtime
             _auditoriumRepository = auditoriumRepository ?? throw new ArgumentNullException(nameof(auditoriumRepository));
             _showtimeRepository = showtimeRepository ?? throw new ArgumentNullException(nameof(showtimeRepository));
             _movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
-            _ticketRepository = ticketRepository ?? throw new ArgumentNullException(nameof(ticketRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -118,84 +112,6 @@ namespace Challange.Movies.Api.Services.Showtime
             return createdShowtime;
         }
 
-        public async Task<TicketDto> BookTicket(CreateTicketDto createTicket)
-        {
-            Domain.Entities.Ticket ticket = new Domain.Entities.Ticket();
-
-            var showtime = await _showtimeRepository.GetAsync(createTicket.ShowtimeId, CancellationToken.None);
-            var totalSeats = showtime.Auditorium.Seats.OrderBy(x => x.Id).ToList();
-
-            var bookedSeats = showtime
-            .Tickets
-            //.Where(t => t.Paid == true || t.CreatedTime > DateTime.Now.AddMinutes(-3))
-            .Select(x => x.Seats)
-            .ToList();
-
-            var autoCancelledSeats = showtime
-            .Tickets.Where(t => t.Paid == false && t.CreatedTime < DateTime.Now.AddMinutes(-3))
-            .Select(x => x.Seats)
-            .ToList();
-
-            var assignedSeats = new List<Seat>();
-            if(autoCancelledSeats.Any())
-            {
-                if(createTicket.SeatCount % 2 ==0)
-                {
-                    
-                }
-                else
-                {
-
-                }
-            }
-            else{
-                assignedSeats = totalSeats
-                                .Skip(bookedSeats.Sum(x => x.Count))
-                                .Take(createTicket.SeatCount).ToList();
-            }
-
-            
-
-            ticket.ShowtimeId = createTicket.ShowtimeId;
-            ticket.Seats = assignedSeats;
-            ticket.Paid = false;
-            ticket.CreatedTime = DateTime.Now;
-
-            var createdTicket = await _ticketRepository.CreateAsync(ticket);
-
-            return new TicketDto()
-            {
-                Id = createdTicket.Id,
-                CreatedTime = createdTicket.CreatedTime,
-                Paid = createdTicket.Paid,
-                Seats = createdTicket.Seats.Select(x => x.SeatNumber).ToList(),
-                Showtime = showtime.SessionDate,
-                ShowtimeId = showtime.Id
-            };
-        }
-
-        public async Task<TicketDto> BuyTicket(CreateTicketDto createTicket)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<TicketDto>> Tickets(int showtimeId)
-        {
-            var ticketDBEntities = await _ticketRepository.GetAsync(showtimeId, CancellationToken.None);
-            var tickets = ticketDBEntities
-            .Select(x =>
-                new TicketDto()
-                {
-                    Id = x.Id,
-                    CreatedTime = x.CreatedTime,
-                    Paid = x.Paid,
-                    Seats = x.Seats.Select(x => x.SeatNumber).ToList(),
-                    Showtime = x.Showtime.SessionDate,
-                    ShowtimeId = x.ShowtimeId
-                }
-            );
-
-            return tickets;
-        }
+        
     }
 }

@@ -31,7 +31,7 @@ namespace Challange.Movies.Api.DBSeed
                         AuditoriumId = 1
                     }
                 },
-                Seats = GenerateSeats(1, 10, 10)
+                Seats = GenerateSeats(1, 3, 5)
             });;
 
             context.Auditoriums.Add(new Auditorium

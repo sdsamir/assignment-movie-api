@@ -48,10 +48,9 @@ namespace Challange.Movies.Domain.Sql.Repositories
 
         public async Task<Ticket> ConfirmPaymentAsync(Ticket ticket, CancellationToken cancel)
         {
-            ticket.Paid = true;
-            _context.Update(ticket);
+            var updatedTicket = _context.Update(ticket);
             await _context.SaveChangesAsync(cancel);
-            return ticket;
+            return updatedTicket.Entity;
         }
     } 
 }
