@@ -6,7 +6,7 @@ namespace Challange.Movies.Api.Services.Ticket
     {
         Task<TicketDto> BookTicket(CreateTicketDto createTicket);
 
-        Task<TicketDto> BuyTicket(Guid ticketId);
+        Task<TicketDto> BuyTicket(BuyTicketDto buyTicket);
 
         Task<IEnumerable<TicketDto>> Tickets(int showtimeId);
     }

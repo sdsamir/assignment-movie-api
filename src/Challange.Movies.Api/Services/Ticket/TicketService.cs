@@ -92,9 +92,9 @@ namespace Challange.Movies.Api.Services.Ticket
             };
         }
 
-        public async Task<TicketDto> BuyTicket(Guid ticketId)
+        public async Task<TicketDto> BuyTicket(BuyTicketDto buyTicket)
         {
-            var ticketDBEntiry = await _ticketRepository.GetAsync(ticketId, CancellationToken.None);
+            var ticketDBEntiry = await _ticketRepository.GetAsync(buyTicket.TicketId, CancellationToken.None);
             if(ticketDBEntiry == null)
             {
                 throw new Exception("Requested ticket does not exist");

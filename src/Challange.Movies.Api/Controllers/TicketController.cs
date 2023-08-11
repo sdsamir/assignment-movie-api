@@ -1,5 +1,4 @@
 ﻿using Challange.Movies.Api.Dtos.Ticket;
-using Challange.Movies.Api.Services.Showtime;
 using Challange.Movies.Api.Services.Ticket;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,10 +29,10 @@ namespace Challange.Movies.Api.Controllers
             return Ok(createdTicket);
         }
 
-        [HttpPost("{id}/buy/tickets")]
-        public async Task<ActionResult<IEnumerable<TicketDto>>> BuyAsync([FromBody]Guid id)
+        [HttpPost("buy/tickets")]
+        public async Task<ActionResult<IEnumerable<TicketDto>>> BuyAsync([FromBody]BuyTicketDto buyTicket)
         {
-            var UpdatedTicket = await _ticketRepository.BuyTicket(id);
+            var UpdatedTicket = await _ticketRepository.BuyTicket(buyTicket);
             return Ok(UpdatedTicket);
         }
     }

@@ -34,6 +34,7 @@ namespace Challange.Movies.Api.Services.Showtime
             foreach (var showTime in showTimeList)
             {
                 var st = showTimes.FirstOrDefault(s => s.Id == showTime.Id);
+                st.SessionDate = showTime.SessionDate;
                 st.Movie = new MovieDto() 
                             { 
                                 Id = showTime.Movie.Id, 
@@ -64,6 +65,7 @@ namespace Challange.Movies.Api.Services.Showtime
             var showTime = new ShowtimeDto();
             showTime.Id = showTimeDBEntity.Id;
             showTime.AuditoriumId = showTimeDBEntity.AuditoriumId;
+            showTime.SessionDate =  showTimeDBEntity.SessionDate;
             showTime.Movie = new MovieDto()
                                 { 
                                     Id = showTimeDBEntity.Movie.Id, 
